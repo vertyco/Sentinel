@@ -51,6 +51,7 @@ class SentryIO(commands.Cog):
         sentry_sdk.init(
             dsn,
             traces_sample_rate=1.0,
+            profiles_sample_rate=1.0,
             shutdown_timeout=0,
             integrations=[
                 AioHttpIntegration(),
@@ -124,8 +125,10 @@ class SentryIO(commands.Cog):
         for comm_arg, value in ctx.kwargs.items():
             crumb_data[f"command_arg_{comm_arg}"] = value
         return crumb_data
-    
-    def prepare_crumbs_interactions(self, interaction: discord.Interaction) -> Mapping[str, str]:
+
+    def prepare_crumbs_interactions(
+        self, interaction: discord.Interaction
+    ) -> Mapping[str, str]:
         crumb_data = {
             "interaction_id": getattr(interaction, "id", "None"),
             "channel_id": getattr(interaction.channel, "id", "None"),
